@@ -2,11 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "aspplanprefix": {
-            "value": "demoasop"
+        "aspName": {
+            "value": "myASP013"
         },
-        "webappprefix": {
-            "value": "demositead"
+        "webappName": {
+            "value": "sdfjknfdaij"
         }
     }
 }
