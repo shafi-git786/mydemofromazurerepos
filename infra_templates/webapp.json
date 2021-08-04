@@ -2,26 +2,22 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "aspName": {
-           "type": "string",
-           "metadata": {
-                "description": "app service plan name"
-            }
+        "aspplanprefix": {
+            "type": "string"
+            
         },
-        "webappname": {
-           "type": "string",
-           "metadata": {
-                "description": "webapp name"
-            }
+        "webappprefix": {
+            "type": "string"
         }
     },
+    "functions": [],
     "variables": {
-        "aspprefix": "[parameters('aspName')]",
-        "webappprefix": "[parameters('webappname')]"
+        "aspplan": "[concat(parameters('aspplanprefix'),uniqueString(resourceGroup().id))]",
+        "webappname": "[concat(parameters('webappprefix'),uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
-            "name": "[variables('aspprefix')]",
+            "name": "[variables('aspplan')]",
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
             "location": "[resourceGroup().location]",
@@ -29,22 +25,22 @@
                 "name": "S1",
                 "capacity": 1
             },
+            "tags": {
+                "displayName": "[variables('aspplan')]"
+            },
             "properties": {
-                "name": "[variables('aspprefix')]"
+                "name": "[variables('aspplan')]"
             }
         },
         {
-            "name": "[variables('webappprefix')]",
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2016-08-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('aspprefix'))]"
-            ],
-            "properties": {
-                "name": "[variables('webappprefix')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('aspprefix'))]"
-            }
+            "apiVersion": "2018-11-01",
+            "name":"[variables('webappname')]",
+           "dependsOn": ["[resourceId('Microsoft.Web/serverfarms', variables('aspplan'))]"],
+           "location":"[resourceGroup().location]",
+           "properties": {
+               "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('aspplan'))]"
+           }
         }
     ],
     "outputs": {}
