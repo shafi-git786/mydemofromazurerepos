@@ -2,46 +2,46 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "aspplanprefix": {
+        "myaspask": {
             "type": "string"
-            
         },
-        "webappprefix": {
+        "mywebapkind": {
             "type": "string"
         }
     },
     "functions": [],
-    "variables": {
-        "aspplan": "[concat(parameters('aspplanprefix'),uniqueString(resourceGroup().id))]",
-        "webappname": "[concat(parameters('webappprefix'),uniqueString(resourceGroup().id))]"
-    },
+    "variables": {},
     "resources": [
         {
-            "name": "[variables('aspplan')]",
+            "name": "[parameters('myaspask')]",
             "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2018-02-01",
+            "apiVersion": "2020-12-01",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "S1",
                 "capacity": 1
             },
-            "tags": {
-                "displayName": "[variables('aspplan')]"
-            },
-            "properties": {
-                "name": "[variables('aspplan')]"
-            }
+            "properties":{
+        "name":"[parameters('myaspask')]"
+    }
+            
+            
+            
+            
+            
         },
         {
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2018-11-01",
-            "name":"[variables('webappname')]",
-           "dependsOn": ["[resourceId('Microsoft.Web/serverfarms', variables('aspplan'))]"],
-           "location":"[resourceGroup().location]",
-           "properties": {
-               "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('aspplan'))]"
-           }
+            "apiVersion": "2020-12-01",
+            "name": "[parameters('mywebapkind')]",
+            "location":"[resourceGroup().location]",
+            "dependsOn":["[resourceId('Microsoft.Web/serverfarms',parameters('myaspask'))]"],
+            "properties": {
+        "serverFarmId":"[resourceId('Microsoft.Web/serverfarms',parameters('myaspask'))]"
+    }
         }
+
+
     ],
     "outputs": {}
 }
